@@ -33,6 +33,20 @@ app.route('/')
     res.sendFile(process.cwd() + '/views/index.html');
   });
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'test';
+
+// Trigger test runner on-demand if get-tests requested before timer
+app.use('/_api/get-tests', function (req, res, next) {
+  if (process.env.NODE_ENV === 'test' && !runner.report) {
+    try {
+      runner.run();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  next();
+});
+
 //For FCC testing purposes
 fccTestingRoutes(app);
 
@@ -47,19 +61,27 @@ app.use(function(req, res, next) {
 });
 
 //Start our server and tests!
-const listener = app.listen(process.env.PORT || 3000, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
-  if(process.env.NODE_ENV==='test') {
-    console.log('Running Tests...');
-    setTimeout(function () {
-      try {
-        runner.run();
-      } catch(e) {
-        console.log('Tests are not valid:');
-        console.error(e);
-      }
-    }, 3500);
-  }
-});
+if (!process.env.VERCEL) {
+  const port = process.env.PORT || 3000;
+  const listener = app.listen(port, function () {
+    console.log('Your app is listening on port ' + listener.address().port);
+    if(process.env.NODE_ENV==='test') {
+      console.log('Running Tests...');
+      setTimeout(function () {
+        try {
+          runner.run();
+        } catch(e) {
+          console.log('Tests are not valid:');
+          console.error(e);
+        }
+      }, 1500);
+    }
+  });
+  listener.on('error', function(err) {
+    if (err.code !== 'EADDRINUSE') {
+      console.error(err);
+    }
+  });
+}
 
 module.exports = app; //for testing

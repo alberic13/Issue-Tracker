@@ -1,27 +1,19 @@
 'use strict';
 
-module.exports = function (app) {
+const issueController = require('../controllers/issue.controller');
 
+module.exports = function (app) {
   app.route('/api/issues/:project')
-  
-    .get(function (req, res){
-      let project = req.params.project;
-      
+    .get(function (req, res) {
+      return issueController.getAll(req, res);
     })
-    
-    .post(function (req, res){
-      let project = req.params.project;
-      
+    .post(function (req, res) {
+      return issueController.create(req, res);
     })
-    
-    .put(function (req, res){
-      let project = req.params.project;
-      
+    .put(function (req, res) {
+      return issueController.update(req, res);
     })
-    
-    .delete(function (req, res){
-      let project = req.params.project;
-      
+    .delete(function (req, res) {
+      return issueController.delete(req, res);
     });
-    
 };

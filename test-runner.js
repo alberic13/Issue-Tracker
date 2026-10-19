@@ -54,10 +54,7 @@ if (fs.existsSync(testDir)) {
 let emitter = new EventEmitter();
 
 try {
-  const reportPath = path.resolve(__dirname, 'tests-report.json');
-  if (fs.existsSync(reportPath)) {
-    emitter.report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
-  }
+  emitter.report = require('./tests-report.json');
 } catch (e) {
   // fallback to runtime execution
 }

@@ -8,12 +8,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": [
-        "tests-report.json",
-        "tests/**",
-        "views/**",
-        "public/**"
-      ]
+      "includeFiles": "**"
     }
   }
 }

@@ -12,11 +12,21 @@ const runner            = require('./test-runner');
 
 let app = express();
 
-app.use('/public', express.static(process.cwd() + '/public'));
+const path = require('path');
+const fs   = require('fs');
+
+const getFilePath = (folder, file) => {
+  const p1 = path.join(__dirname, folder, file);
+  if (fs.existsSync(p1)) return p1;
+  return path.join(process.cwd(), folder, file);
+};
+
+const publicDir = fs.existsSync(path.join(__dirname, 'public'))
+  ? path.join(__dirname, 'public')
+  : path.join(process.cwd(), 'public');
+app.use('/public', express.static(publicDir));
 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
-
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,13 +34,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Sample front-end
 app.route('/:project/')
   .get(function (req, res) {
-    res.sendFile(process.cwd() + '/views/issue.html');
+    res.sendFile(getFilePath('views', 'issue.html'));
   });
 
 //Index page (static HTML)
 app.route('/')
   .get(function (req, res) {
-    res.sendFile(process.cwd() + '/views/index.html');
+    res.sendFile(getFilePath('views', 'index.html'));
   });
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'test';

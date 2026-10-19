@@ -36,7 +36,8 @@ module.exports = function (app) {
   app.route('/_api/server.js')
     .get(function(req, res, next) {
       console.log('requested');
-      fs.readFile(__dirname + '/server.js', function(err, data) {
+      const serverPath = fs.existsSync(__dirname + '/../server.js') ? (__dirname + '/../server.js') : (__dirname + '/server.js');
+      fs.readFile(serverPath, function(err, data) {
         if(err) return next(err);
         res.send(data.toString());
       });
@@ -44,7 +45,8 @@ module.exports = function (app) {
   app.route('/_api/routes/api.js')
     .get(function(req, res, next) {
       console.log('requested');
-      fs.readFile(__dirname + '/routes/api.js', function(err, data) {
+      const apiPath = fs.existsSync(__dirname + '/api.js') ? (__dirname + '/api.js') : (__dirname + '/routes/api.js');
+      fs.readFile(apiPath, function(err, data) {
         if(err) return next(err);
         res.type('txt').send(data.toString());
       });

@@ -5,6 +5,7 @@ const bodyParser  = require('body-parser');
 const expect      = require('chai').expect;
 const cors        = require('cors');
 require('dotenv').config();
+process.env.NODE_ENV = 'test';
 
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
@@ -42,8 +43,6 @@ app.route('/')
   .get(function (req, res) {
     res.sendFile(getFilePath('views', 'index.html'));
   });
-
-process.env.NODE_ENV = process.env.NODE_ENV || 'test';
 
 // Trigger test runner on-demand if get-tests requested before timer
 app.use('/_api/get-tests', function (req, res, next) {
